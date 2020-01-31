@@ -5,7 +5,7 @@ const Task = use('App/Models/Task');
 class TaskController {
 
   async index() {
-    const tasks = await Task.All();
+    const tasks = await Task.all().orderBy('created_at', 'desc');
     return tasks;
   }
 
@@ -25,12 +25,20 @@ class TaskController {
 
 
 
-  async update({ params, request, response }) {
+  async update({ params, request }) {
+    const task = await Task.findOrFail(params.id);
+    const data = request.only(['done']);
+
+    task.merge(data);
+    await task.save();
   }
 
 
   async destroy({ params }) {
     const task = await Task.findOrFail(params.id);
+    if (task == null) {
+      return
+    }
     await task.delete();
   }
 }
