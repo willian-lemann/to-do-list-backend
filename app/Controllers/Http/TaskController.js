@@ -5,7 +5,7 @@ const Task = use('App/Models/Task');
 class TaskController {
 
   async index() {
-    const tasks = await Task.all().orderBy('created_at', 'desc');
+    const tasks = await Task.query().orderBy('id', 'desc').fetch();
     return tasks;
   }
 
@@ -27,9 +27,9 @@ class TaskController {
 
   async update({ params, request }) {
     const task = await Task.findOrFail(params.id);
-    const data = request.only(['done']);
+    const { done } = request.all();
 
-    task.merge(data);
+    task.merge({ done: done });
     await task.save();
   }
 

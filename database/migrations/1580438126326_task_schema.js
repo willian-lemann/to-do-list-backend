@@ -7,8 +7,7 @@ class TaskSchema extends Schema {
   up() {
     this.create('tasks', (table) => {
       table.increments() 
-      table.string('content', 240).notNullable()
-      table.boolean('done').notNullable()
+      table.string('content', 240).notNullable() 
       table.timestamps()
     })
   }
