@@ -1,45 +1,33 @@
 'use strict'
 
-const Task = use('App/Models/Task');
+let TaskService = use('App/Services/TaskService');
 
 class TaskController {
+  constructor() {
+    TaskService = new TaskService
+  }
 
   async index() {
-    const tasks = await Task.query().orderBy('id', 'desc').fetch();
-    return tasks;
+    await TaskService.index();
+
   }
 
   async store({ request }) {
-    const data = request.only(['content', 'done']);
-    const task = await Task.create(data);
-
-    return task;
+    await TaskService.store(request);
   }
 
 
   async show({ params }) {
-    const task = await Task.findOrFail(params.id);
-    return task;
+    await TaskService.show(params);
   }
 
-
-
-
   async update({ params, request }) {
-    const task = await Task.findOrFail(params.id);
-    const { done } = request.all();
-
-    task.merge({ done: done });
-    await task.save();
+    await TaskService.update(params, request)
   }
 
 
   async destroy({ params }) {
-    const task = await Task.findOrFail(params.id);
-    if (task == null) {
-      return
-    }
-    await task.delete();
+    await TaskService.destroy(params);
   }
 }
 
